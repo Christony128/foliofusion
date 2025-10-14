@@ -1,0 +1,31 @@
+"use client"
+import {useRouter,usePathname} from 'next/navigation'
+import { useEffect, useState } from 'react';
+    export default function Header(){
+    const pathname = usePathname();
+    const router=useRouter();
+    const [storedToken,setStoredToken]=useState<string | null>(null)
+    useEffect(() => {
+        setStoredToken(localStorage.getItem("token"));
+    }, [pathname]);
+    const logout=()=>{
+        console.log("bob")
+        localStorage.removeItem("token")
+        router.push('./register')
+    }
+    function Button({link,text}:{link:string,text: string}){
+        return <div><button className="text-black hover:underline hover:text-gray-600" onClick={()=>{router.push(link)}}>{text}</button></div>
+    
+    }
+    return <div className="flex items-center flex-col sm:flex-row justify-between border border-gray-300 pr-5 pt-2 pb-2 mb-10">
+        <div className="logo text-gray-600 pl-30">Foliofusion</div>
+        <div className="routes flex items-center gap-30">
+            <Button link="/portfolios" text="portfolios" />
+            <Button link="/about" text="About" />
+            
+            {!storedToken && <button className="border border-black text-white bg-black rounded pt-2 pb-2 pl-3 pr-3 hover:text-black hover:bg-white" onClick={()=>router.push("/register")}>Register</button>}
+            { storedToken && <button className="border border-black text-white bg-red-400 rounded pt-2 pb-2 pl-3 pr-3 hover:bg-red-600" onClick={logout}>Log Out</button>}
+            
+        </div>
+    </div>
+}

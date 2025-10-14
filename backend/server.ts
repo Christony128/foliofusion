@@ -7,9 +7,6 @@ const app=express();
 const PORT=process.env.port || 1100
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
-app.get('/hello',(req,res)=>{
-    res.json({message: "worked"})
-})
 app.use(express.urlencoded({extended: false}))
 
 app.use('/api/users',userRoutes)
