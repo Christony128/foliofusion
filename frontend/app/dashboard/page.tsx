@@ -16,6 +16,7 @@ function Dashboard() {
     
   return (
     <div>
+      {token}
       <h1>Dashboard</h1>
     </div>
   );

@@ -21,6 +21,9 @@ export const protect= asyncHandler(async(req: AuthRequest,res: Response,next)=>{
             }
             const user=await pool.query("select id,username from users where id=$1",[decoded.id])
             req.user=user.rows[0];
+            console.log("Token:", token);
+            console.log("Decoded:", decoded);
+            console.log("User from DB:", user.rows[0]);
             next();
         }
         catch(err){
@@ -28,6 +31,7 @@ export const protect= asyncHandler(async(req: AuthRequest,res: Response,next)=>{
             res.status(401);
             throw new Error("Not authorized")
         }
+        
     }
     if(!token){
         res.status(401);
