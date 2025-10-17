@@ -7,7 +7,8 @@ type Response = express.Response;
 export const getMyProjects = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: "Must be signed in to view projects" });
+      res.status(401).json({ error: "Must be signed in to view projects" });
+      return;
     }
 
     const userId = req.user.id;
@@ -33,23 +34,25 @@ export const getProjects = async (req: AuthRequest, res: Response) => {
 export const postProjects = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: "Must be signed in to add projects" });
+      res.status(401).json({ error: "Must be signed in to add projects" });
+      return;
     }
 
     const userId = req.user.id;
     const { title, description, project_url, repo_url, tech_stack } = req.body;
+    console.log(req.body);
 
     if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+      res.status(400).json({ error: "Title is required" });
+      return;
     }
 
     const result = await pool.query(
-      `INSERT INTO projects (user_id, title, description, project_url, repo_url, tech_stack)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [userId, title, description, project_url, repo_url, tech_stack]
+      "INSERT INTO projects (user_id, title, description, project_url, repo_url, tech_stack) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [req.user.id, title, description, project_url, repo_url, tech_stack]
     );
 
-    res.status(201).json({ message: "Project added", project: result.rows[0] });
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to add project" });
@@ -58,14 +61,16 @@ export const postProjects = async (req: AuthRequest, res: Response) => {
 export const putProjects = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: "Must be signed in to update projects" });
+      res.status(401).json({ error: "Must be signed in to update projects" });
+      return;
     }
 
     const { id } = req.params;
     const { title, description, project_url, repo_url, tech_stack } = req.body;
 
     if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+      res.status(400).json({ error: "Title is required" });
+      return;
     }
 
     const result = await pool.query(
@@ -77,7 +82,8 @@ export const putProjects = async (req: AuthRequest, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Cannot edit this project" });
+      res.status(404).json({ error: "Cannot edit this project" });
+      return;
     }
 
     res.status(200).json({ message: "Project updated", project: result.rows[0] });
@@ -89,7 +95,8 @@ export const putProjects = async (req: AuthRequest, res: Response) => {
 export const deleteProjects = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: "Must be signed in to delete projects" });
+      res.status(401).json({ error: "Must be signed in to delete projects" });
+      return;
     }
 
     const { id } = req.params;
@@ -100,7 +107,8 @@ export const deleteProjects = async (req: AuthRequest, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Cannot delete this project" });
+      res.status(404).json({ error: "Cannot delete this project" });
+      return;
     }
 
     res.status(200).json({ message: "Project deleted", project: result.rows[0] });

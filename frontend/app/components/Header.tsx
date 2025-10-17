@@ -9,9 +9,8 @@ import { useEffect, useState } from 'react';
         setStoredToken(localStorage.getItem("token"));
     }, [pathname]);
     const logout=()=>{
-        console.log("bob")
         localStorage.removeItem("token")
-        router.push('./register')
+        router.push('/register')
     }
     function Button({link,text}:{link:string,text: string}){
         return <div><button className="text-black hover:underline hover:text-gray-600" onClick={()=>{router.push(link)}}>{text}</button></div>

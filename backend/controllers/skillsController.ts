@@ -38,8 +38,8 @@ export const postSkills=async(req:AuthRequest, res: Response)=>{
         return;
     }
     try{
-        const result=await pool.query("INSERT INTO skills (user_id,skill_name) VALUES ($1,$2) returning skill_name",[userid,skill_name])
-        res.status(200).json({message: "Added row",added: result})
+        const result=await pool.query("INSERT INTO skills (user_id,skill_name) VALUES ($1,$2) returning *",[userid,skill_name])
+        res.status(201).json(result.rows[0])
     }
     catch{
         res.status(400).json({error:"Failed to add skill"})

@@ -6,7 +6,10 @@ type Response = express.Response;
 
 export const getMyEducation = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ error: "Must be signed in to view education" });
+    if (!req.user) {
+      res.status(401).json({ error: "Must be signed in to view education" });
+      return;
+    }
 
     const result = await pool.query("SELECT * FROM education WHERE user_id=$1", [req.user.id]);
     res.status(200).json(result.rows);
@@ -29,51 +32,67 @@ export const getEducation = async (req: AuthRequest, res: Response) => {
 
 export const postEducation = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ error: "Must be signed in to add education" });
+    if (!req.user) {
+      res.status(401).json({ error: "Must be signed in to add education" });
+      return;
+    }
 
-    const { institution, degree, field_of_study, start_date, end_date, grade, description } = req.body;
-    if (!institution || !degree || !field_of_study || !start_date) {
-      return res.status(400).json({ error: "institution, degree, field_of_study and start_date are required" });
+    const { institution, degree, start_year, end_year} = req.body;
+    if (!institution || !degree || !start_year) {
+      res.status(400).json({ error: "institution, degree and start_year are required" });
+      return;
     }
 
     const result = await pool.query(
-      "INSERT INTO education (user_id, institution, degree, field_of_study, start_date, end_date, grade, description) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *",
-      [req.user.id, institution, degree, field_of_study, start_date, end_date || null, grade || null, description || null]
+      "INSERT INTO education (user_id, institution, degree, start_year, end_year) VALUES ($1,$2,$3,$4,$5) RETURNING *",
+      [req.user.id, institution, degree, start_year , end_year || null,]
     );
 
-    res.status(200).json({ message: "Education added", education: result.rows[0] });
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to add education" });
+    res.status(500).json({ error: err });
   }
 };
+
 export const putEducation = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ error: "Must be signed in to update education" });
+    if (!req.user) {
+      res.status(401).json({ error: "Must be signed in to upyear education" });
+      return;
+    }
 
     const { id } = req.params;
-    const { institution, degree, field_of_study, start_date, end_date, grade, description } = req.body;
+    const { institution, degree,start_year, end_year } = req.body;
 
-    if (!institution || !degree || !field_of_study || !start_date) {
-      return res.status(400).json({ error: "institution, degree, field_of_study and start_date are required" });
+    if (!institution || !degree ||  !start_year) {
+      res.status(400).json({ error: "institution, degree and start_year are required" });
+      return;
     }
 
     const result = await pool.query(
-      "UPDATE education SET institution=$1, degree=$2, field_of_study=$3, start_date=$4, end_date=$5, grade=$6, description=$7 WHERE id=$8 AND user_id=$9 RETURNING *",
-      [institution, degree, field_of_study, start_date, end_date || null, grade || null, description || null, id, req.user.id]
+      "UPyear education SET institution=$1, degree=$2, start_year=$3, end_year=$4 WHERE id=$5 AND user_id=$6 RETURNING *",
+      [institution, degree, start_year, end_year || null, id, req.user.id]
     );
 
-    if (result.rows.length === 0) return res.status(404).json({ error: "Cannot edit this education" });
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "Cannot edit this education" });
+      return;
+    }
 
     res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to update education" });
+    res.status(500).json({ error: "Failed to upyear education" });
   }
 };
+
 export const deleteEducation = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ error: "Must be signed in to delete education" });
+    if (!req.user) {
+      res.status(401).json({ error: "Must be signed in to delete education" });
+      return;
+    }
 
     const { id } = req.params;
     const result = await pool.query(
@@ -81,7 +100,10 @@ export const deleteEducation = async (req: AuthRequest, res: Response) => {
       [id, req.user.id]
     );
 
-    if (result.rows.length === 0) return res.status(404).json({ error: "Cannot delete this education" });
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "Cannot delete this education" });
+      return;
+    }
 
     res.status(200).json({ message: "Education deleted", deleted: result.rows[0] });
   } catch (err) {

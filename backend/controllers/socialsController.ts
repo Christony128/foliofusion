@@ -26,25 +26,31 @@ export const getSocials=async(req:AuthRequest, res: Response)=>{
         res.status(500).json({error: "Failed to get user socials"})
     }
 }
-export const postSocials=async(req:AuthRequest, res: Response)=>{
-    if(!(req.user)){
-        res.status(401).json({error: "Must be signed in to add socials"})
+export const postSocials = async (req: AuthRequest, res: Response) => {
+    if (!req.user) {
+        res.status(401).json({ error: "Must be signed in to add socials" });
         return;
     }
-    const userid=req.user.id
-    const {platform,url}=req.body
-    if(!platform || !url){
-        res.status(400).json({error: "Both fields are required"})
+    
+    const userid = req.user.id;
+    const { platform, url } = req.body;
+    
+    if (!platform || !url) {
+        res.status(400).json({ error: "Both fields are required" });
         return;
     }
-    try{
-        const result=await pool.query("INSERT INTO socials (user_id,platform,url) VALUES ($1,$2,$3) returning platform",[userid,platform,url])
-        res.status(200).json({message: "Added row",added: result})
+    
+    try {
+        const result = await pool.query(
+            "INSERT INTO socials (user_id, platform, url) VALUES ($1, $2, $3) RETURNING *",
+            [userid, platform, url]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("Add social error:", err);
+        res.status(400).json({ error: "Failed to add social link" });
     }
-    catch{
-        res.status(400).json({error:"Failed to add social link"})
-    }
-}   
+}
 export const putSocials = async (req: AuthRequest, res: Response) => {
   if (!req.user) {
     res.status(401).json({ error: "Must be signed in to update socials" });
