@@ -12,11 +12,11 @@ type Response = express.Response;
 export const findUser=async(req: AuthRequest,res:Response)=>{
     try{
         const username=req.params.username
-        const result=await pool.query("select hasresume from users where username = $1",[username])
+        const result=await pool.query("select id,username,hasresume from users where username = $1",[username])
         if(result.rows.length===0) res.status(404).json({message:"User not found"})
         else{
-            const resume=result.rows[0].hasresume
-            res.status(200).json({username,hasresume:resume})}
+            res.status(200).json(result.rows[0])}
+            return;
     }
     catch(err){
         res.status(500).json("User doesnt exist")

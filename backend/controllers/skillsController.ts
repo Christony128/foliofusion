@@ -18,9 +18,9 @@ export const getMySkills=async(req: AuthRequest, res: Response)=>{
 }
 export const getSkills=async(req:AuthRequest, res: Response)=>{
     try{
-        const userid=req.params.id
+        const userid=req.params.userid
         const result=await pool.query("select * from skills where user_id=$1",[userid])
-        res.status(200).json(result.rows)
+        res.status(200).json(result.rows || [])
     }
     catch(err){
         res.status(500).json({error: "Failed to get user skills"})

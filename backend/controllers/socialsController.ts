@@ -18,9 +18,9 @@ export const getMySocials=async(req: AuthRequest, res: Response)=>{
 }
 export const getSocials=async(req:AuthRequest, res: Response)=>{
     try{
-        const userid=req.params.id
+        const userid=req.params.userid
         const result=await pool.query("select * from socials where user_id=$1",[userid])
-        res.status(200).json(result.rows)
+        res.status(200).json(result.rows || [])
     }
     catch(err){
         res.status(500).json({error: "Failed to get user socials"})

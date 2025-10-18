@@ -21,9 +21,9 @@ export const getMyAchievements = async (req: AuthRequest, res: Response) => {
 
 export const getAchievements = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.userid;
     const result = await pool.query("SELECT * FROM achievements WHERE user_id=$1", [userId]);
-    res.status(200).json(result.rows);
+    res.status(200).json(result.rows || []);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch user achievements" });

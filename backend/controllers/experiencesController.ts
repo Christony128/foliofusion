@@ -23,10 +23,10 @@ export const getMyExperience = async (req: AuthRequest, res: Response) => {
 
 export const getExperience = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.params.id;
-    const result = await pool.query("SELECT * FROM experience WHERE user_id=$1 ORDER BY start_date DESC", [userId]);
+    const userId = req.params.userid;
+    const result = await pool.query("SELECT * FROM experience WHERE user_id=$1", [userId]);
 
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(result.rows || []);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to get user experiences" });

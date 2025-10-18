@@ -90,7 +90,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   if (result.ok) {
     const data=await result.json()
     if(data.hasresume){
-      router.push(`/${searchQuery}`)
+      router.push(`/portfolios/${searchQuery}`)
     }
     else{
       setMessage("This user has not initialised their resume")

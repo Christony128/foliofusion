@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
     return <div className="flex items-center flex-col sm:flex-row justify-between border border-gray-300 pr-5 pt-2 pb-2 mb-10">
         <div className="logo text-gray-600 pl-30">Foliofusion</div>
         <div className="routes flex items-center gap-30">
-            <Button link="/portfolios" text="portfolios" />
+            <Button link="/dashboard" text="portfolios" />
             <Button link="/about" text="About" />
             
             {!storedToken && <button className="border border-black text-white bg-black rounded pt-2 pb-2 pl-3 pr-3 hover:text-black hover:bg-white" onClick={()=>router.push("/register")}>Register</button>}
