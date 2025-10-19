@@ -127,7 +127,7 @@ export default function Edit() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:1100/api/users/profile", {
+      const response = await fetch("http://localhost:1100/api/users/", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -142,11 +142,11 @@ export default function Edit() {
         setShowEditProfile(false);
         console.log("Profile updated successfully");
       } else {
-        alert("Failed to update profile");
+        console.log("Failed to update Profile")
       }
     } catch (err) {
       console.error("Update profile error:", err);
-      alert("Error updating profile");
+      console.log("Error while updating Profile")
     }
   };
 
