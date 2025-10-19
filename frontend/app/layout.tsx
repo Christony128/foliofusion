@@ -1,5 +1,5 @@
 import "./globals.css";
-import Header from './components/Header'
+import Header from "./components/Header";
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -7,8 +7,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <title>Foliofusion | Instant Resume builder for developers</title>
       <body>
-        <Header/>
+        <Header />
         {children}
       </body>
     </html>

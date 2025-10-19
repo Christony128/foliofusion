@@ -1,6 +1,6 @@
-import express from 'express';
-import pool from '../config/db.ts';
-import type { AuthRequest } from '../types/index.ts';
+import express from "express";
+import pool from "../config/db.ts";
+import type { AuthRequest } from "../types/index.ts";
 
 type Response = express.Response;
 
@@ -12,7 +12,10 @@ export const getMyExperience = async (req: AuthRequest, res: Response) => {
     }
 
     const userId = req.user.id;
-    const result = await pool.query("SELECT * FROM experience WHERE user_id=$1 ORDER BY start_date DESC", [userId]);
+    const result = await pool.query(
+      "SELECT * FROM experience WHERE user_id=$1 ORDER BY start_date DESC",
+      [userId]
+    );
 
     res.status(200).json(result.rows);
   } catch (err) {
@@ -24,7 +27,10 @@ export const getMyExperience = async (req: AuthRequest, res: Response) => {
 export const getExperience = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userid;
-    const result = await pool.query("SELECT * FROM experience WHERE user_id=$1", [userId]);
+    const result = await pool.query(
+      "SELECT * FROM experience WHERE user_id=$1",
+      [userId]
+    );
 
     res.status(200).json(result.rows || []);
   } catch (err) {
@@ -44,7 +50,9 @@ export const postExperience = async (req: AuthRequest, res: Response) => {
     const { company, role, start_date, end_date, description } = req.body;
 
     if (!company || !role || !start_date) {
-      res.status(400).json({ error: "Company name, role, and start date are required" });
+      res
+        .status(400)
+        .json({ error: "Company name, role, and start date are required" });
       return;
     }
 
@@ -72,17 +80,29 @@ export const putExperience = async (req: AuthRequest, res: Response) => {
     const { company, role, start_date, end_date, description } = req.body;
 
     if (!company || !role || !start_date) {
-      res.status(400).json({ error: "Company name, role, and start date are required" });
+      res
+        .status(400)
+        .json({ error: "Company name, role, and start date are required" });
       return;
     }
 
     const result = await pool.query(
       "UPDATE experience SET company=$1, role=$2, start_date=$3, end_date=$4, description=$5 WHERE id=$6 AND user_id=$7 RETURNING *",
-      [company, role, start_date, end_date || null, description || null, id, userId]
+      [
+        company,
+        role,
+        start_date,
+        end_date || null,
+        description || null,
+        id,
+        userId,
+      ]
     );
 
     if (result.rows.length === 0) {
-      res.status(404).json({ error: "Cannot edit this experience (wrong user or id)" });
+      res
+        .status(404)
+        .json({ error: "Cannot edit this experience (wrong user or id)" });
       return;
     }
 
@@ -109,11 +129,15 @@ export const deleteExperience = async (req: AuthRequest, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      res.status(404).json({ error: "Cannot delete this experience (wrong user or id)" });
+      res
+        .status(404)
+        .json({ error: "Cannot delete this experience (wrong user or id)" });
       return;
     }
 
-    res.status(200).json({ message: "Experience deleted", deleted: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Experience deleted", deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete experience" });

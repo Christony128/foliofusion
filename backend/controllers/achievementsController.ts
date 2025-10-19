@@ -1,6 +1,6 @@
-import express from 'express';
-import pool from '../config/db.ts';
-import type { AuthRequest } from '../types/index.ts';
+import express from "express";
+import pool from "../config/db.ts";
+import type { AuthRequest } from "../types/index.ts";
 
 type Response = express.Response;
 
@@ -11,7 +11,10 @@ export const getMyAchievements = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const result = await pool.query("SELECT * FROM achievements WHERE user_id=$1", [req.user.id]);
+    const result = await pool.query(
+      "SELECT * FROM achievements WHERE user_id=$1",
+      [req.user.id]
+    );
     res.status(200).json(result.rows);
   } catch (err) {
     console.error(err);
@@ -22,7 +25,10 @@ export const getMyAchievements = async (req: AuthRequest, res: Response) => {
 export const getAchievements = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userid;
-    const result = await pool.query("SELECT * FROM achievements WHERE user_id=$1", [userId]);
+    const result = await pool.query(
+      "SELECT * FROM achievements WHERE user_id=$1",
+      [userId]
+    );
     res.status(200).json(result.rows || []);
   } catch (err) {
     console.error(err);
@@ -58,7 +64,9 @@ export const postAchievements = async (req: AuthRequest, res: Response) => {
 export const putAchievements = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      res.status(401).json({ error: "Must be signed in to update achievements" });
+      res
+        .status(401)
+        .json({ error: "Must be signed in to update achievements" });
       return;
     }
 
@@ -90,7 +98,9 @@ export const putAchievements = async (req: AuthRequest, res: Response) => {
 export const deleteAchievements = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) {
-      res.status(401).json({ error: "Must be signed in to delete achievements" });
+      res
+        .status(401)
+        .json({ error: "Must be signed in to delete achievements" });
       return;
     }
 
@@ -105,7 +115,9 @@ export const deleteAchievements = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    res.status(200).json({ message: "Achievement deleted", deleted: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Achievement deleted", deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete achievement" });

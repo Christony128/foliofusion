@@ -7,6 +7,7 @@ import {getMyProjects, getProjects, postProjects,putProjects,deleteProjects} fro
 import {getMyExperience, getExperience, postExperience,putExperience,deleteExperience} from '../controllers/experiencesController.ts'
 import {getMyEducation, getEducation, postEducation,putEducation,deleteEducation} from '../controllers/educationController.ts'
 import {getMyAchievements, getAchievements, postAchievements,putAchievements,deleteAchievements} from '../controllers/achievementsController.ts'
+import {getMyCustoms,addCustom,deleteCustom,findCustoms} from '../controllers/customController.ts'
 const router=express.Router()
 //socials
 router.get('/socials',protect,asyncHandler(getMySocials))
@@ -44,6 +45,10 @@ router.get('/achievements/:userid',asyncHandler(getAchievements))
 router.post('/achievements',protect,asyncHandler(postAchievements))
 router.put('/achievements/:id',protect,asyncHandler(putAchievements))
 router.delete('/achievements/:id',protect,asyncHandler(deleteAchievements))
-
+//custom
+router.get('/custom',protect,asyncHandler(getMyCustoms))
+router.get('/custom/:userid',asyncHandler(findCustoms))
+router.post('/custom',protect,asyncHandler(addCustom))
+router.delete('/custom/:id',protect,asyncHandler(deleteCustom))
 
 export default router

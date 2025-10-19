@@ -1,50 +1,54 @@
-import express from 'express'
-import pool from '../config/db.ts'
-import type {AuthRequest} from '../types/index.ts'
+import express from "express";
+import pool from "../config/db.ts";
+import type { AuthRequest } from "../types/index.ts";
 type Response = express.Response;
-export const getMySkills=async(req: AuthRequest, res: Response)=>{
-    try{
-    if(!(req.user)){
-        res.status(401).json({error: "Must be signed in to view resumes"})
-        return;
+export const getMySkills = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ error: "Must be signed in to view resumes" });
+      return;
     }
-    const userid=req.user.id
-    const result=await pool.query(" select * from skills where user_id=$1",[userid])
-    res.status(200).json(result.rows)
-    }
-    catch(err){
-        res.status(500).json({error: "Failed to get logged in user info"})
-    }
-}
-export const getSkills=async(req:AuthRequest, res: Response)=>{
-    try{
-        const userid=req.params.userid
-        const result=await pool.query("select * from skills where user_id=$1",[userid])
-        res.status(200).json(result.rows || [])
-    }
-    catch(err){
-        res.status(500).json({error: "Failed to get user skills"})
-    }
-}
-export const postSkills=async(req:AuthRequest, res: Response)=>{
-    if(!(req.user)){
-        res.status(401).json({error: "Must be signed in to add skills"})
-        return;
-    }
-    const userid=req.user.id
-    const {skill_name}=req.body
-    if(!skill_name){
-        res.status(400).json({error: "This field is required"})
-        return;
-    }
-    try{
-        const result=await pool.query("INSERT INTO skills (user_id,skill_name) VALUES ($1,$2) returning *",[userid,skill_name])
-        res.status(201).json(result.rows[0])
-    }
-    catch{
-        res.status(400).json({error:"Failed to add skill"})
-    }
-}   
+    const userid = req.user.id;
+    const result = await pool.query(" select * from skills where user_id=$1", [
+      userid,
+    ]);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get logged in user info" });
+  }
+};
+export const getSkills = async (req: AuthRequest, res: Response) => {
+  try {
+    const userid = req.params.userid;
+    const result = await pool.query("select * from skills where user_id=$1", [
+      userid,
+    ]);
+    res.status(200).json(result.rows || []);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to get user skills" });
+  }
+};
+export const postSkills = async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ error: "Must be signed in to add skills" });
+    return;
+  }
+  const userid = req.user.id;
+  const { skill_name } = req.body;
+  if (!skill_name) {
+    res.status(400).json({ error: "This field is required" });
+    return;
+  }
+  try {
+    const result = await pool.query(
+      "INSERT INTO skills (user_id,skill_name) VALUES ($1,$2) returning *",
+      [userid, skill_name]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch {
+    res.status(400).json({ error: "Failed to add skill" });
+  }
+};
 export const putSkills = async (req: AuthRequest, res: Response) => {
   if (!req.user) {
     res.status(401).json({ error: "Must be signed in to update skills" });
@@ -52,7 +56,7 @@ export const putSkills = async (req: AuthRequest, res: Response) => {
   }
 
   const { id } = req.params;
-  const {skill_name} = req.body;
+  const { skill_name } = req.body;
 
   if (!skill_name) {
     res.status(400).json({ error: "This is a required field" });
@@ -86,7 +90,8 @@ export const deleteSkills = async (req: AuthRequest, res: Response) => {
 
   try {
     const result = await pool.query(
-      "DELETE FROM skills WHERE id=$1 AND user_id=$2 RETURNING *",[id, req.user.id]
+      "DELETE FROM skills WHERE id=$1 AND user_id=$2 RETURNING *",
+      [id, req.user.id]
     );
 
     if (result.rows.length === 0) {

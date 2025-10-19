@@ -1,6 +1,6 @@
-import express from 'express';
-import pool from '../config/db.ts';
-import type { AuthRequest } from '../types/index.ts';
+import express from "express";
+import pool from "../config/db.ts";
+import type { AuthRequest } from "../types/index.ts";
 
 type Response = express.Response;
 
@@ -11,7 +11,10 @@ export const getMyEducation = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const result = await pool.query("SELECT * FROM education WHERE user_id=$1", [req.user.id]);
+    const result = await pool.query(
+      "SELECT * FROM education WHERE user_id=$1",
+      [req.user.id]
+    );
     res.status(200).json(result.rows);
   } catch (err) {
     console.error(err);
@@ -22,7 +25,10 @@ export const getMyEducation = async (req: AuthRequest, res: Response) => {
 export const getEducation = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userid;
-    const result = await pool.query("SELECT * FROM education WHERE user_id=$1", [userId]);
+    const result = await pool.query(
+      "SELECT * FROM education WHERE user_id=$1",
+      [userId]
+    );
     res.status(200).json(result.rows || []);
   } catch (err) {
     console.error(err);
@@ -37,15 +43,17 @@ export const postEducation = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const { institution, degree, start_year, end_year} = req.body;
+    const { institution, degree, start_year, end_year } = req.body;
     if (!institution || !degree || !start_year) {
-      res.status(400).json({ error: "institution, degree and start_year are required" });
+      res
+        .status(400)
+        .json({ error: "institution, degree and start_year are required" });
       return;
     }
 
     const result = await pool.query(
       "INSERT INTO education (user_id, institution, degree, start_year, end_year) VALUES ($1,$2,$3,$4,$5) RETURNING *",
-      [req.user.id, institution, degree, start_year , end_year || null,]
+      [req.user.id, institution, degree, start_year, end_year || null]
     );
 
     res.status(201).json(result.rows[0]);
@@ -63,10 +71,12 @@ export const putEducation = async (req: AuthRequest, res: Response) => {
     }
 
     const { id } = req.params;
-    const { institution, degree,start_year, end_year } = req.body;
+    const { institution, degree, start_year, end_year } = req.body;
 
-    if (!institution || !degree ||  !start_year) {
-      res.status(400).json({ error: "institution, degree and start_year are required" });
+    if (!institution || !degree || !start_year) {
+      res
+        .status(400)
+        .json({ error: "institution, degree and start_year are required" });
       return;
     }
 
@@ -105,7 +115,9 @@ export const deleteEducation = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    res.status(200).json({ message: "Education deleted", deleted: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Education deleted", deleted: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete education" });

@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import {useRouter} from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function Login() {
-  const router=useRouter();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -18,34 +18,33 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-try {
-    const res = await fetch("http://localhost:1100/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const res = await fetch("http://localhost:1100/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await res.json();
-    
-    if (res.ok && data.token) {
-      localStorage.removeItem("token")
-      localStorage.setItem("token", data.token);
-      console.log("Login successful:", data);
-      router.push("./dashboard")
-    } else {
-      alert(data.message || "Login failed");
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.removeItem("token");
+        localStorage.setItem("token", data.token);
+        console.log("Login successful:", data);
+        router.push("./dashboard");
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Network error. Please try again.");
     }
-  } catch (error) {
-    console.error("Registration error:", error);
-    alert("Network error. Please try again.");
-  }
-};
-useEffect(()=>{
-  if(localStorage.getItem("token")){
-    router.push("./dashboard");
-  }
-},[])
-
+  };
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      router.push("./dashboard");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 pt-12 px-4">

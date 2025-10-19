@@ -12,7 +12,9 @@ export const getMyProjects = async (req: AuthRequest, res: Response) => {
     }
 
     const userId = req.user.id;
-    const result = await pool.query("SELECT * FROM projects WHERE user_id=$1", [userId]);
+    const result = await pool.query("SELECT * FROM projects WHERE user_id=$1", [
+      userId,
+    ]);
 
     res.status(200).json(result.rows);
   } catch (err) {
@@ -23,7 +25,9 @@ export const getMyProjects = async (req: AuthRequest, res: Response) => {
 export const getProjects = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userid;
-    const result = await pool.query("SELECT * FROM projects WHERE user_id=$1", [userId]);
+    const result = await pool.query("SELECT * FROM projects WHERE user_id=$1", [
+      userId,
+    ]);
 
     res.status(200).json(result.rows || []);
   } catch (err) {
@@ -86,7 +90,9 @@ export const putProjects = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    res.status(200).json({ message: "Project updated", project: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Project updated", project: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to update project" });
@@ -111,7 +117,9 @@ export const deleteProjects = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    res.status(200).json({ message: "Project deleted", project: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Project deleted", project: result.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete project" });
