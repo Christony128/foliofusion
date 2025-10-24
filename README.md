@@ -2,7 +2,7 @@ Foliofusion
 A full stack portfolio builder that helps developers construct professional portfolios with ease.
 
 Demo Video- https://youtu.be/6piJWVwbr04
-
+Design- https://www.figma.com/design/mwGJygn2qHfAU2eSfOr1Tu/Untitled?node-id=0-1&p=f&t=5FChJ6KYnIZhyBL9-0
 Features
 User Authentication using JWT tokens  
 Separate Link to individual portfolios  
@@ -124,3 +124,4 @@ Register/login to edit your own portfolio or view other portfolios
 Click on create/edit portfolio to initialise/alter your portfolio  
 OR   
 Enter a username in the Searchbar to view their portfolio  
+
